@@ -68,23 +68,22 @@ public class GridManager : MonoBehaviour {
                        (y - verticalSpacingOffset)   / -(1 + borderSpacing));
   }
 
-	public void GenerateRandomTile() {
-		// make sure we can create tiles
-		if (currentTilesAmount >= 16) {
-			throw new UnityException("Unable to create new tile - grid is already full");
-		}
+  public void GenerateRandomTile() {
+    // make sure we can create tiles
+    if (currentTilesAmount >= 16) {
+      throw new UnityException("Unable to create new tile - grid is already full");
+    }
 
-		int value;
-		// find out if we are generating a tile with the lowest or highest value
-		float highOrLowChance = Random.Range(0f, 0.99f);
-		if (highOrLowChance >= 0.9f) {
-			value = highestNewTileValue;
-		} else {
-			value = lowestNewTileValue;
-		}
+    int value;
+    // find out if we are generating a tile with the lowest or highest value
+    float highOrLowChance = Random.Range(0f, 0.99f);
+    if (highOrLowChance >= 0.9f) {
+      value = highestNewTileValue;
+    } else {
+      value = lowestNewTileValue;
+    }
 
-
-		// attempt to get the starting position
+    // attempt to get the starting position
     int x = Random.Range(0, cols);
     int y = Random.Range(0, rows);
 
@@ -97,27 +96,28 @@ public class GridManager : MonoBehaviour {
         grid[x, y] = value;
         Vector2 worldPosition = GridToWorldPoint(x, y);
         GameObject obj;
-			  if (value == lowestNewTileValue) {
+        if (value == lowestNewTileValue) {
           obj = (GameObject) Instantiate(tilePrefabs[0], worldPosition, transform.rotation);
-			  } else {
+        } else {
           obj = (GameObject) Instantiate(tilePrefabs[1], worldPosition, transform.rotation);
-			  }
+        }
+
         currentTilesAmount++;
         TileAnimationHandler tileAnimManager = obj.GetComponent<TileAnimationHandler>();
         tileAnimManager.AnimateEntry();
-			}
+      }
 
-			x++;
-			if (x >= cols) {
-				y++;
-				x = 0;
-			}
+      x++;
+      if (x >= cols) {
+        y++;
+        x = 0;
+      }
 
-			if (y >= rows) {
-				y = 0;
-			}
-		}
-	}
+      if (y >= rows) {
+        y = 0;
+      }
+    }
+  }
 
   private void UpdateGrid(GameObject currentTile, Vector2 amountToMove) {
     Transform tileTransform = currentTile.transform;
