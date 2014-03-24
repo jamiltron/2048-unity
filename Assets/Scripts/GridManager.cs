@@ -5,11 +5,11 @@ public class GridManager : MonoBehaviour {
 
   private static int rows = 4;
   private static int cols = 4;
-	private static int lowestNewTileValue = 2;
-	private static int highestNewTileValue = 4;
-	private static float horizontalSpacingOffset = -1.65f;
-	private static float verticalSpacingOffset = 1.65f;
-	private static float borderSpacing = 0.1f;
+  private static int lowestNewTileValue = 2;
+  private static int highestNewTileValue = 4;
+  private static float horizontalSpacingOffset = -1.65f;
+  private static float verticalSpacingOffset = 1.65f;
+  private static float borderSpacing = 0.1f;
   private static float spaceBetweenTiles = 1.1f;
   private static Vector3 horizontalRay = new Vector3(0.6f, 0f, 0f);
   private static Vector3 verticalRay = new Vector3(0f, 0.6f, 0f);
@@ -34,16 +34,16 @@ public class GridManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (state == State.Loaded) {
-			state = State.WaitingForInput;
-			GenerateRandomTile ();
-			GenerateRandomTile ();
-		} else if (state == State.WaitingForInput) {
-			if (Input.GetButtonDown ("Left")) {
+    if (state == State.Loaded) {
+      state = State.WaitingForInput;
+      GenerateRandomTile();
+      GenerateRandomTile();
+    } else if (state == State.WaitingForInput) {
+      if (Input.GetButtonDown ("Left")) {
         MoveTilesLeft();
         state = State.CheckingMatches;
-			} else if (Input.GetButtonDown ("Right")) {
-        MoveTilesRight ();
+      } else if (Input.GetButtonDown ("Right")) {        
+        MoveTilesRight();
         state = State.CheckingMatches;
       } else if (Input.GetButtonDown ("Up")) {
         MoveTilesUp();
@@ -52,11 +52,11 @@ public class GridManager : MonoBehaviour {
         MoveTilesDown();
         state = State.CheckingMatches;
       }
-		} else if (state == State.CheckingMatches) {
+    } else if (state == State.CheckingMatches) {
       GenerateRandomTile();
       state = State.WaitingForInput;
     }
-	}
+  }
 
 	private static Vector2 GridToWorldPoint(int x, int y) {
 		return new Vector2(x + horizontalSpacingOffset + borderSpacing * x, 
@@ -89,23 +89,23 @@ public class GridManager : MonoBehaviour {
     int x = Random.Range(0, cols);
     int y = Random.Range(0, rows);
 
-		// starting from the random starting position, loop through
-		// each cell in the grid until we find an empty position
-		bool found = false;
-		while (!found) {
-			if (grid[x, y] == 0) {
-				found = true;
-				grid[x, y] = value;
-				Vector2 worldPosition = GridToWorldPoint(x, y);
-				GameObject obj;
-				if (value == lowestNewTileValue) {
-					obj = (GameObject) Instantiate(tilePrefabs[0], worldPosition, transform.rotation);
-				} else {
-					obj = (GameObject) Instantiate(tilePrefabs[1], worldPosition, transform.rotation);
-				}
+    // starting from the random starting position, loop through
+    // each cell in the grid until we find an empty positio
+    bool found = false;
+    while (!found) {
+      if (grid[x, y] == 0) {
+        found = true;
+        grid[x, y] = value;
+        Vector2 worldPosition = GridToWorldPoint(x, y);
+        GameObject obj;
+			  if (value == lowestNewTileValue) {
+          obj = (GameObject) Instantiate(tilePrefabs[0], worldPosition, transform.rotation);
+			  } else {
+          obj = (GameObject) Instantiate(tilePrefabs[1], worldPosition, transform.rotation);
+			  }
         currentTilesAmount++;
-				TileAnimationHandler tileAnimManager = obj.GetComponent<TileAnimationHandler>();
-				tileAnimManager.AnimateEntry();
+        TileAnimationHandler tileAnimManager = obj.GetComponent<TileAnimationHandler>();
+        tileAnimManager.AnimateEntry();
 			}
 
 			x++;
@@ -135,8 +135,6 @@ public class GridManager : MonoBehaviour {
   }
 
   private void UpgradeTile(GameObject toDestroy, Tile destroyTile, GameObject toUpgrade, Tile upgradeTile) {
-    Debug.Log ("In upgrade tile!");
-
     Vector3 toDestroyPosition = toDestroy.transform.position;
     Vector3 toUpgradePosition = toUpgrade.transform.position;
     Vector2 upgradeGridPoint = WorldToGridPoint(toUpgradePosition.x, toUpgradePosition.y);
