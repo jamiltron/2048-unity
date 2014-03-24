@@ -32,8 +32,8 @@ public class GridManager : MonoBehaviour {
     state = State.Loaded;
   }
 	
-	// Update is called once per frame
-	void Update () {
+  // Update is called once per frame
+  void Update () {
     if (state == State.Loaded) {
       state = State.WaitingForInput;
       GenerateRandomTile();
