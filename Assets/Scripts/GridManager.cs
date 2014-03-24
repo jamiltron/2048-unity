@@ -19,18 +19,18 @@ public class GridManager : MonoBehaviour {
   
   public GameObject[] tilePrefabs;
 
-	private enum State {
-		Loaded, 
-		WaitingForInput, 
-		CheckingMatches
-	}
+  private enum State {
+    Loaded, 
+    WaitingForInput, 
+    CheckingMatches
+  }
 
-	private State state;
+  private State state;
 	
-	// Use this for initialization
-	void Start () {
-		state = State.Loaded;
-	}
+  // Use this for initialization
+  void Start () {
+    state = State.Loaded;
+  }
 	
 	// Update is called once per frame
 	void Update () {
@@ -58,15 +58,14 @@ public class GridManager : MonoBehaviour {
     }
   }
 
-	private static Vector2 GridToWorldPoint(int x, int y) {
-		return new Vector2(x + horizontalSpacingOffset + borderSpacing * x, 
-		                   -y + verticalSpacingOffset - borderSpacing * y);
-	}
+  private static Vector2 GridToWorldPoint(int x, int y) {
+    return new Vector2(x + horizontalSpacingOffset + borderSpacing * x, 
+                       -y + verticalSpacingOffset - borderSpacing * y);
+  }
 
   private static Vector2 WorldToGridPoint(float x, float y) {
     return new Vector2((x - horizontalSpacingOffset) / (1 + borderSpacing),
                        (y - verticalSpacingOffset)   / -(1 + borderSpacing));
-
   }
 
 	public void GenerateRandomTile() {
