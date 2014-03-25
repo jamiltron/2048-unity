@@ -4,12 +4,18 @@ using System.Collections;
 public class TileAnimationHandler : MonoBehaviour {
 
 	public float scaleSpeed;
+  public float growSize;
 
 	private Transform _transform;
+  private Vector3 growVector;
 
 	public void AnimateEntry() {
 		StartCoroutine("AnimationEntry");
 	}
+
+  public void AnimateUpgrade() {
+    StartCoroutine("AnimationUpgrade");
+  }
 
 	private IEnumerator AnimationEntry() {
 		while (_transform == null) yield return null;
@@ -21,8 +27,24 @@ public class TileAnimationHandler : MonoBehaviour {
 		}
 	}
 
+  private IEnumerator AnimationUpgrade() {
+    while (_transform == null) yield return null;
+
+    while(_transform.localScale.x < 1f + growSize) {
+      _transform.localScale = Vector3.MoveTowards(_transform.localScale, Vector3.one + growVector, scaleSpeed * Time.deltaTime);
+      yield return null;
+    }
+
+    while (_transform.localScale.x > 1f) {
+      Debug.Log ("shrinking!");
+      _transform.localScale = Vector3.MoveTowards(_transform.localScale, Vector3.one, scaleSpeed * Time.deltaTime);
+      yield return null;
+    }
+  }
+
 	// Use this for initialization
 	void Start () {
 		_transform = transform;
+    growVector = new Vector3(growSize, growSize, 0f);
 	}
 }

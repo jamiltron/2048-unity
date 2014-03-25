@@ -15,7 +15,9 @@ TODO
 ----
 
 Add fail state.      
-Add animation for matching.
+Add "check-for-valid-move"
+Maybe add slide animation.
+Maybe add score ticking animation.
 
 
 LICENSE

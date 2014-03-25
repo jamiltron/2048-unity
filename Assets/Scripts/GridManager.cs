@@ -162,7 +162,7 @@ public class GridManager : MonoBehaviour {
     Vector2 destroyGridPoint = WorldToGridPoint(toDestroyPosition.x, toDestroyPosition.y);
 
     // create the upgraded tile
-    Instantiate (tilePrefabs[upgradeTile.power], toUpgradePosition, transform.rotation);
+    GameObject newTile = (GameObject) Instantiate (tilePrefabs[upgradeTile.power], toUpgradePosition, transform.rotation);
 
     // set the upgrade tile's grid value to double its current value
     grid[Mathf.RoundToInt(upgradeGridPoint.x), Mathf.RoundToInt(upgradeGridPoint.y)] = upgradeTile.value * 2;
@@ -177,6 +177,8 @@ public class GridManager : MonoBehaviour {
     Destroy(toDestroy);
     Destroy(toUpgrade);
     currentTilesAmount--;
+    TileAnimationHandler tileAnim = newTile.GetComponent<TileAnimationHandler>();
+    tileAnim.AnimateUpgrade();
   }
 
   private void MoveTilesLeft() {
