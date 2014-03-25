@@ -14,10 +14,13 @@ public class GridManager : MonoBehaviour {
   private static Vector3 horizontalRay = new Vector3(0.6f, 0f, 0f);
   private static Vector3 verticalRay = new Vector3(0f, 0.6f, 0f);
 
+  private int points;
   private int[,] grid = new int[rows,cols];
   private int currentTilesAmount = 0;
+  private GUIText scoreText;
   
   public GameObject[] tilePrefabs;
+  public GameObject scoreObject;
 
   private enum State {
     Loaded, 
@@ -30,6 +33,7 @@ public class GridManager : MonoBehaviour {
   // Use this for initialization
   void Start () {
     state = State.Loaded;
+    scoreText = scoreObject.GetComponent<GUIText>();
   }
 	
   // Update is called once per frame
@@ -147,6 +151,9 @@ public class GridManager : MonoBehaviour {
 
     // clear out the destroyed tile's grid entry
     grid[Mathf.RoundToInt(destroyGridPoint.x), Mathf.RoundToInt(destroyGridPoint.y)] = 0;
+
+    points += upgradeTile.value * 2;
+    scoreText.text = points.ToString();
 
     // destroy both tiles
     Destroy(toDestroy);

@@ -13,9 +13,9 @@ Use arrow keys or WASD to move. Join matching tiles to advance powers of 2. Try 
 TODO
 ----
 
-Add score.
-Add fail state.
-Add reset.
+Add fail state.    
+Add reset.    
+Add animation for matching.
 
 
 LICENSE
