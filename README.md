@@ -7,14 +7,14 @@ A [2048 clone](http://gabrielecirulli.github.io/2048/) written in Unity as a pra
 Instructions
 ------------
 
-Use arrow keys or WASD to move. Join matching tiles to advance powers of 2. Try to get to 2048!
+Use arrow keys or WASD to move. R to reset.  
+Join matching tiles to advance powers of 2. Try to get to 2048!
 
 
 TODO
 ----
 
-Add fail state.    
-Add reset.    
+Add fail state.      
 Add animation for matching.
 
 

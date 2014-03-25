@@ -55,11 +55,29 @@ public class GridManager : MonoBehaviour {
       } else if (Input.GetButtonDown ("Down")) {
         MoveTilesDown();
         state = State.CheckingMatches;
+      } else if (Input.GetButtonDown ("Reset")) {
+        Reset();
       }
     } else if (state == State.CheckingMatches) {
       GenerateRandomTile();
       state = State.WaitingForInput;
     }
+  }
+
+  private void Reset() {
+    for (int x = 0; x < cols; x++) {
+      for (int y = 0; y < rows; y++) {
+        if (grid[x, y] != 0) {
+          GameObject currentObject = GetObjectAtGridPosition(x, y);
+          grid[x, y] = 0;
+          Destroy (currentObject);
+        }
+      }
+    }
+
+    points = 0;
+    scoreText.text = "0";
+    state = State.Loaded;
   }
 
   private static Vector2 GridToWorldPoint(int x, int y) {
