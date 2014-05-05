@@ -29,15 +29,16 @@ public class GridManager : MonoBehaviour {
   private enum State {
     Loaded, 
     WaitingForInput, 
-    CheckingMatches
+    CheckingMatches,
+    GameOver
   }
 
   private State state;
 
   void OnGUI () {
     if (GUI.Button (resetButton, "Reset")) {
-	  Reset ();
-	}
+	    Reset ();
+	  }
   }
 
   void Awake () {
@@ -72,9 +73,30 @@ public class GridManager : MonoBehaviour {
         Reset();
       }
     } else if (state == State.CheckingMatches) {
-      GenerateRandomTile();
-      state = State.WaitingForInput;
+      if (CheckForMovesLeft()) {
+        GenerateRandomTile();
+        state = State.WaitingForInput;
+      } else {
+        // TODO: actually tell the player that the game is over
+        Debug.Log ("GAME OVER");
+        Reset();
+      }
     }
+  }
+
+  private bool CheckForMovesLeft() {
+    for (int x = 0; x < cols - 1; x++) {
+      for (int y = 0; y < rows - 1; y++) {
+        if (grid[x, y] == 0 || grid[x + 1, y] == 0 || grid[x, y + 1] == 0) {
+          return true;
+        } else if (grid[x, y] == grid[x + 1, y]) {
+          return true;
+        } else if (grid[x, y] == grid[x, y + 1]) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   private void Reset() {
