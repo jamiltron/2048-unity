@@ -10,6 +10,8 @@ public class GridManager : MonoBehaviour {
   private static float horizontalSpacingOffset = -1.65f;
   private static float verticalSpacingOffset = 1.65f;
   private static float borderSpacing = 0.1f;
+  private static float resetButtonWidth = 80f;
+  private static float resetButtonHeight = 40f;
   private static float spaceBetweenTiles = 1.1f;
   private static Vector3 horizontalRay = new Vector3(0.6f, 0f, 0f);
   private static Vector3 verticalRay = new Vector3(0f, 0.6f, 0f);
@@ -18,9 +20,11 @@ public class GridManager : MonoBehaviour {
   private int[,] grid = new int[rows,cols];
   private int currentTilesAmount = 0;
   private GUIText scoreText;
+  private Rect resetButton;
   
   public GameObject[] tilePrefabs;
   public GameObject scoreObject;
+  public Transform resetButtonTransform;
 
   private enum State {
     Loaded, 
@@ -30,9 +34,20 @@ public class GridManager : MonoBehaviour {
 
   private State state;
 
+  void OnGUI () {
+    if (GUI.Button (resetButton, "Reset")) {
+	  Reset ();
+	}
+  }
+
   void Awake () {
     state = State.Loaded;
     scoreText = scoreObject.GetComponent<GUIText>();
+    Vector3 resetButtonWorldPosition = Camera.main.WorldToScreenPoint (new Vector3(resetButtonTransform.position.x, -resetButtonTransform.position.y, resetButtonTransform.position.z));
+    resetButton = new Rect (resetButtonWorldPosition.x,
+	                        resetButtonWorldPosition.y,
+	                        resetButtonWidth, 
+	                        resetButtonHeight);
   }
 	
   void Update () {
