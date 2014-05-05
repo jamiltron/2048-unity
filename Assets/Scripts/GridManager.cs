@@ -29,14 +29,12 @@ public class GridManager : MonoBehaviour {
   }
 
   private State state;
-	
-  // Use this for initialization
-  void Start () {
+
+  void Awake () {
     state = State.Loaded;
     scoreText = scoreObject.GetComponent<GUIText>();
   }
 	
-  // Update is called once per frame
   void Update () {
     if (state == State.Loaded) {
       state = State.WaitingForInput;
