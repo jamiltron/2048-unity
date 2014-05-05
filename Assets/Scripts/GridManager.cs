@@ -12,6 +12,8 @@ public class GridManager : MonoBehaviour {
   private static float borderSpacing = 0.1f;
   private static float resetButtonWidth = 80f;
   private static float resetButtonHeight = 40f;
+  private static float gameOverButtonWidth = 150f;
+  private static float gameOverButtonHeight = 300f;
   private static float spaceBetweenTiles = 1.1f;
   private static Vector3 horizontalRay = new Vector3(0.6f, 0f, 0f);
   private static Vector3 verticalRay = new Vector3(0f, 0.6f, 0f);
@@ -21,6 +23,7 @@ public class GridManager : MonoBehaviour {
   private int currentTilesAmount = 0;
   private GUIText scoreText;
   private Rect resetButton;
+  private Rect gameOverButton;
   
   public GameObject[] tilePrefabs;
   public GameObject scoreObject;
@@ -39,16 +42,28 @@ public class GridManager : MonoBehaviour {
     if (GUI.Button (resetButton, "Reset")) {
 	    Reset ();
 	  }
+    if (state == State.GameOver) {
+      if (GUI.Button (gameOverButton, "Game Over")) {
+        Reset ();
+      }
+    }
   }
 
   void Awake () {
     state = State.Loaded;
     scoreText = scoreObject.GetComponent<GUIText>();
-    Vector3 resetButtonWorldPosition = Camera.main.WorldToScreenPoint (new Vector3(resetButtonTransform.position.x, -resetButtonTransform.position.y, resetButtonTransform.position.z));
+    Vector3 resetButtonWorldPosition = Camera.main.WorldToScreenPoint (new Vector3(resetButtonTransform.position.x, 
+                                                                                   -resetButtonTransform.position.y, 
+                                                                                   resetButtonTransform.position.z));
     resetButton = new Rect (resetButtonWorldPosition.x,
-	                        resetButtonWorldPosition.y,
-	                        resetButtonWidth, 
-	                        resetButtonHeight);
+	                          resetButtonWorldPosition.y,
+	                          resetButtonWidth, 
+	                          resetButtonHeight);
+    Vector3 gameOverButtonWorldPosition = Camera.main.WorldToScreenPoint(new Vector3(-1f, 1f, 0f));
+    gameOverButton = new Rect(gameOverButtonWorldPosition.x,
+                              gameOverButtonWorldPosition.y,
+                              gameOverButtonWidth,
+                              gameOverButtonHeight);
   }
 	
   void Update () {
@@ -77,9 +92,7 @@ public class GridManager : MonoBehaviour {
         GenerateRandomTile();
         state = State.WaitingForInput;
       } else {
-        // TODO: actually tell the player that the game is over
-        Debug.Log ("GAME OVER");
-        Reset();
+        state = State.GameOver;
       }
     }
   }
@@ -112,6 +125,7 @@ public class GridManager : MonoBehaviour {
 
     points = 0;
     scoreText.text = "0";
+    currentTilesAmount = 0;
     state = State.Loaded;
   }
 
