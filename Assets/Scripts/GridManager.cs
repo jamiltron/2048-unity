@@ -54,11 +54,12 @@ public class GridManager : MonoBehaviour {
     scoreText = scoreObject.GetComponent<GUIText>();
     Vector3 resetButtonWorldPosition = Camera.main.WorldToScreenPoint (new Vector3(resetButtonTransform.position.x, 
                                                                                    -resetButtonTransform.position.y, 
-                                                                                   resetButtonTransform.position.z));
+                                                                                  resetButtonTransform.position.z));
     resetButton = new Rect (resetButtonWorldPosition.x,
 	                          resetButtonWorldPosition.y,
 	                          resetButtonWidth, 
-	                          resetButtonHeight);
+    	                      resetButtonHeight);
+
     Vector3 gameOverButtonWorldPosition = Camera.main.WorldToScreenPoint(new Vector3(-1f, 1f, 0f));
     gameOverButton = new Rect(gameOverButtonWorldPosition.x,
                               gameOverButtonWorldPosition.y,
@@ -261,7 +262,7 @@ public class GridManager : MonoBehaviour {
   }
 
   private void MoveTilesRight() {
-    for (int x = 3; x >= 0; x--) {
+    for (int x = 3; x >= 1; x--) {
       for (int y = 3; y >= 0; y--) {
         if (grid[x, y] == 0) {
           continue;
@@ -325,7 +326,7 @@ public class GridManager : MonoBehaviour {
   }
 
   private void MoveTilesDown() {
-    for (int y = 3; y >= 0; y--) {
+    for (int y = 3; y >= 1; y--) {
       for (int x = 0; x < 4; x++) {
         if (grid[x, y] == 0) {
           continue;
