@@ -262,7 +262,7 @@ public class GridManager : MonoBehaviour {
   }
 
   private void MoveTilesRight() {
-    for (int x = 3; x >= 1; x--) {
+    for (int x = 3; x >= 0; x--) {
       for (int y = 3; y >= 0; y--) {
         if (grid[x, y] == 0) {
           continue;
@@ -326,7 +326,7 @@ public class GridManager : MonoBehaviour {
   }
 
   private void MoveTilesDown() {
-    for (int y = 3; y >= 1; y--) {
+    for (int y = 3; y >= 0; y--) {
       for (int x = 0; x < 4; x++) {
         if (grid[x, y] == 0) {
           continue;
