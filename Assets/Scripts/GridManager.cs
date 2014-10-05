@@ -10,6 +10,10 @@ public class GridManager : MonoBehaviour {
   private static float horizontalSpacingOffset = -1.65f;
   private static float verticalSpacingOffset = 1.65f;
   private static float borderSpacing = 0.1f;
+  private static float resetButtonWidth = 80f;
+  private static float resetButtonHeight = 40f;
+  private static float gameOverButtonWidth = 150f;
+  private static float gameOverButtonHeight = 300f;
   private static float spaceBetweenTiles = 1.1f;
   private static Vector3 horizontalRay = new Vector3(0.6f, 0f, 0f);
   private static Vector3 verticalRay = new Vector3(0f, 0.6f, 0f);
@@ -18,25 +22,51 @@ public class GridManager : MonoBehaviour {
   private int[,] grid = new int[rows,cols];
   private int currentTilesAmount = 0;
   private GUIText scoreText;
+  private Rect resetButton;
+  private Rect gameOverButton;
   
   public GameObject[] tilePrefabs;
   public GameObject scoreObject;
+  public Transform resetButtonTransform;
 
   private enum State {
     Loaded, 
     WaitingForInput, 
-    CheckingMatches
+    CheckingMatches,
+    GameOver
   }
 
   private State state;
-	
-  // Use this for initialization
-  void Start () {
+
+  void OnGUI () {
+    if (GUI.Button (resetButton, "Reset")) {
+	    Reset ();
+	  }
+    if (state == State.GameOver) {
+      if (GUI.Button (gameOverButton, "Game Over")) {
+        Reset ();
+      }
+    }
+  }
+
+  void Awake () {
     state = State.Loaded;
     scoreText = scoreObject.GetComponent<GUIText>();
+    Vector3 resetButtonWorldPosition = Camera.main.WorldToScreenPoint (new Vector3(resetButtonTransform.position.x, 
+                                                                                   -resetButtonTransform.position.y, 
+                                                                                  resetButtonTransform.position.z));
+    resetButton = new Rect (resetButtonWorldPosition.x,
+	                          resetButtonWorldPosition.y,
+	                          resetButtonWidth, 
+    	                      resetButtonHeight);
+
+    Vector3 gameOverButtonWorldPosition = Camera.main.WorldToScreenPoint(new Vector3(-1f, 1f, 0f));
+    gameOverButton = new Rect(gameOverButtonWorldPosition.x,
+                              gameOverButtonWorldPosition.y,
+                              gameOverButtonWidth,
+                              gameOverButtonHeight);
   }
 	
-  // Update is called once per frame
   void Update () {
     if (state == State.Loaded) {
       state = State.WaitingForInput;
@@ -59,9 +89,28 @@ public class GridManager : MonoBehaviour {
         Reset();
       }
     } else if (state == State.CheckingMatches) {
-      GenerateRandomTile();
-      state = State.WaitingForInput;
+      if (CheckForMovesLeft()) {
+        GenerateRandomTile();
+        state = State.WaitingForInput;
+      } else {
+        state = State.GameOver;
+      }
     }
+  }
+
+  private bool CheckForMovesLeft() {
+    for (int x = 0; x < cols - 1; x++) {
+      for (int y = 0; y < rows - 1; y++) {
+        if (grid[x, y] == 0 || grid[x + 1, y] == 0 || grid[x, y + 1] == 0) {
+          return true;
+        } else if (grid[x, y] == grid[x + 1, y]) {
+          return true;
+        } else if (grid[x, y] == grid[x, y + 1]) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   private void Reset() {
@@ -77,6 +126,7 @@ public class GridManager : MonoBehaviour {
 
     points = 0;
     scoreText.text = "0";
+    currentTilesAmount = 0;
     state = State.Loaded;
   }
 

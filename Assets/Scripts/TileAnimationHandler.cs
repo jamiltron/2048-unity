@@ -2,30 +2,29 @@
 using System.Collections;
 
 public class TileAnimationHandler : MonoBehaviour {
-
-	public float scaleSpeed;
+  public float scaleSpeed;
   public float growSize;
 
-	private Transform _transform;
+  private Transform _transform;
   private Vector3 growVector;
 
-	public void AnimateEntry() {
-		StartCoroutine("AnimationEntry");
-	}
+  public void AnimateEntry() {
+    StartCoroutine("AnimationEntry");
+  }
 
   public void AnimateUpgrade() {
     StartCoroutine("AnimationUpgrade");
   }
 
-	private IEnumerator AnimationEntry() {
-		while (_transform == null) yield return null;
+  private IEnumerator AnimationEntry() {
+    while (_transform == null) yield return null;
 
-		_transform.localScale = new Vector3(0.25f, 0.25f, 1f);
-		while (_transform.localScale.x < 1f) {
-			_transform.localScale = Vector3.MoveTowards(_transform.localScale, Vector3.one, scaleSpeed * Time.deltaTime);
-			yield return null;
-		}
-	}
+    _transform.localScale = new Vector3(0.25f, 0.25f, 1f);
+    while (_transform.localScale.x < 1f) {
+	  _transform.localScale = Vector3.MoveTowards(_transform.localScale, Vector3.one, scaleSpeed * Time.deltaTime);
+      yield return null;
+    }
+  }
 
   private IEnumerator AnimationUpgrade() {
     while (_transform == null) yield return null;
@@ -36,15 +35,13 @@ public class TileAnimationHandler : MonoBehaviour {
     }
 
     while (_transform.localScale.x > 1f) {
-      Debug.Log ("shrinking!");
       _transform.localScale = Vector3.MoveTowards(_transform.localScale, Vector3.one, scaleSpeed * Time.deltaTime);
       yield return null;
     }
   }
 
-	// Use this for initialization
-	void Start () {
-		_transform = transform;
+  void Start () {
+    _transform = transform;
     growVector = new Vector3(growSize, growSize, 0f);
-	}
+  }
 }
