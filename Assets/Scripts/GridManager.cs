@@ -74,17 +74,21 @@ public class GridManager : MonoBehaviour {
       GenerateRandomTile();
     } else if (state == State.WaitingForInput) {
       if (Input.GetButtonDown ("Left")) {
-        MoveTilesLeft();
-        state = State.CheckingMatches;
+        if (MoveTilesLeft()) {
+          state = State.CheckingMatches;
+        }
       } else if (Input.GetButtonDown ("Right")) {        
-        MoveTilesRight();
-        state = State.CheckingMatches;
+        if (MoveTilesRight()) {
+          state = State.CheckingMatches;
+        }
       } else if (Input.GetButtonDown ("Up")) {
-        MoveTilesUp();
-        state = State.CheckingMatches;
+        if (MoveTilesUp()) {
+          state = State.CheckingMatches;
+        }
       } else if (Input.GetButtonDown ("Down")) {
-        MoveTilesDown();
-        state = State.CheckingMatches;
+        if (MoveTilesDown()) {
+          state = State.CheckingMatches;
+        }
       } else if (Input.GetButtonDown ("Reset")) {
         Reset();
       }
@@ -231,7 +235,8 @@ public class GridManager : MonoBehaviour {
     tileAnim.AnimateUpgrade();
   }
 
-  private void MoveTilesLeft() {
+  private bool MoveTilesLeft() {
+    bool hasMoved = false;
     for (int x = 1; x < 4; x++) {
       for (int y = 3; y >= 0; y--) {
         if (grid[x, y] == 0) {
@@ -250,18 +255,22 @@ public class GridManager : MonoBehaviour {
               Tile thisTile = currentTile.GetComponent<Tile>();
               if (thisTile.power == otherTile.power) {
                 UpgradeTile(currentTile, thisTile, hit.collider.gameObject, otherTile);
+                hasMoved = true;
               }
             }
             stopped = true;
           } else {
             UpdateGrid (currentTile, new Vector2(-spaceBetweenTiles, 0f));
+            hasMoved = true;
           }
         }
       }
     }
+    return hasMoved;
   }
 
-  private void MoveTilesRight() {
+  private bool MoveTilesRight() {
+    bool hasMoved = false;
     for (int x = 3; x >= 0; x--) {
       for (int y = 3; y >= 0; y--) {
         if (grid[x, y] == 0) {
@@ -281,18 +290,22 @@ public class GridManager : MonoBehaviour {
               Tile thisTile = currentTile.GetComponent<Tile>();
               if (thisTile.power == otherTile.power) {
                 UpgradeTile(currentTile, thisTile, hit.collider.gameObject, otherTile);
+                hasMoved = true;
               }
             }
             stopped = true;
           } else {
             UpdateGrid (currentTile, new Vector2(spaceBetweenTiles, 0f));
+            hasMoved = true;
           }
         }
       }
     }
+    return hasMoved;
   }
 
-  private void MoveTilesUp() {
+  private bool MoveTilesUp() {
+    bool hasMoved = false;
     for (int y = 1; y < 4; y++) {
       for (int x = 0; x < 4; x++) {
         if (grid[x, y] == 0) {
@@ -313,19 +326,22 @@ public class GridManager : MonoBehaviour {
               Tile thisTile = currentTile.GetComponent<Tile>();
               if (thisTile.power == otherTile.power) {
                 UpgradeTile(currentTile, thisTile, hit.collider.gameObject, otherTile);
+                hasMoved = true;
               }
             }
             stopped = true;
           } else {
-
-            UpdateGrid (currentTile, new Vector2(0f, spaceBetweenTiles));
+            UpdateGrid(currentTile, new Vector2(0f, spaceBetweenTiles));
+            hasMoved = true;
           }
         }
       }
     }
+    return hasMoved;
   }
 
-  private void MoveTilesDown() {
+  private bool MoveTilesDown() {
+    bool hasMoved = false;
     for (int y = 3; y >= 0; y--) {
       for (int x = 0; x < 4; x++) {
         if (grid[x, y] == 0) {
@@ -344,15 +360,18 @@ public class GridManager : MonoBehaviour {
               Tile thisTile = currentTile.GetComponent<Tile>();
               if (thisTile.power == otherTile.power) {
                 UpgradeTile(currentTile, thisTile, hit.collider.gameObject, otherTile);
+                hasMoved = true;
               }
             }
             stopped = true;
           } else {
             UpdateGrid (currentTile, new Vector2(0f, -spaceBetweenTiles));
+            hasMoved = true;
           }
         }
       }
     }
+    return hasMoved;
   }
 
   private GameObject GetObjectAtGridPosition(int x, int y) {
