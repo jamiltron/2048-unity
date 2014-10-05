@@ -93,8 +93,8 @@ public class GridManager : MonoBehaviour {
         Reset();
       }
     } else if (state == State.CheckingMatches) {
+      GenerateRandomTile();
       if (CheckForMovesLeft()) {
-        GenerateRandomTile();
         state = State.WaitingForInput;
       } else {
         state = State.GameOver;
@@ -103,13 +103,15 @@ public class GridManager : MonoBehaviour {
   }
 
   private bool CheckForMovesLeft() {
-    for (int x = 0; x < cols - 1; x++) {
-      for (int y = 0; y < rows - 1; y++) {
-        if (grid[x, y] == 0 || grid[x + 1, y] == 0 || grid[x, y + 1] == 0) {
+    if (currentTilesAmount < rows * cols) {
+      return true;
+    }
+
+    for (int x = 0; x < cols; x++) {
+      for (int y = 0; y < rows; y++) {
+        if (x != cols - 1 && grid[x, y] == grid[x + 1, y]) {
           return true;
-        } else if (grid[x, y] == grid[x + 1, y]) {
-          return true;
-        } else if (grid[x, y] == grid[x, y + 1]) {
+        } else if (y != rows - 1 && grid[x, y] == grid[x, y + 1]) {
           return true;
         }
       }
