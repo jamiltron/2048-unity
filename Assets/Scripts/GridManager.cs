@@ -92,7 +92,7 @@ public class GridManager : MonoBehaviour {
 
   public void GenerateRandomTile() {
     // make sure we can create tiles
-    if (currentTilesAmount >= 16) {
+    if (currentTilesAmount >= rows * cols) {
       throw new UnityException("Unable to create new tile - grid is already full");
     }
 
