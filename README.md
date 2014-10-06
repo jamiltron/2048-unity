@@ -1,23 +1,26 @@
 2048-unity
 ==========
 
-A [2048 clone](http://gabrielecirulli.github.io/2048/) written in Unity as a practice to see how well Unity would handle it.
+A [2048 clone](http://gabrielecirulli.github.io/2048/) written in [Unity](http://www.unity3d.com) as a practice to see how well it could handle a basic puzzle game.
 
 
 Instructions
 ------------
 
-Use arrow keys or WASD to move. R to reset.  
+Use arrow keys or WASD to move.    
+R to reset.  
+    
 Join matching tiles to advance powers of 2. Try to get to 2048!
 
 
 TODO
 ----
 
-Add fail state.      
-Add "check-for-valid-move"
-Maybe add slide animation.
-Maybe add score ticking animation.
+Make the game over button better.         
+Clean up and DRY the code.    
+Use object pooling for the tiles just to.    
+Maybe add slide animation.    
+Maybe add score ticking animation.    
 
 
 LICENSE
