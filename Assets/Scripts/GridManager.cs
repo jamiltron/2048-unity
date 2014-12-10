@@ -10,6 +10,7 @@ public class GridManager : MonoBehaviour {
   private static float horizontalSpacingOffset = -1.65f;
   private static float verticalSpacingOffset = 1.65f;
   private static float borderSpacing = 0.1f;
+  private static float raycastDistance = 0.4f;
   private static float resetButtonWidth = 80f;
   private static float resetButtonHeight = 40f;
   private static float gameOverButtonWidth = 150f;
@@ -248,7 +249,7 @@ public class GridManager : MonoBehaviour {
 
         while (!stopped) {
           // see if the position to the left is open
-          RaycastHit2D hit = Physics2D.Raycast(currentTile.transform.position - horizontalRay, -Vector2.right, 0.4f);
+          RaycastHit2D hit = Physics2D.Raycast(currentTile.transform.position - horizontalRay, -Vector2.right, raycastDistance);
           if (hit && hit.collider.gameObject != currentTile) {
             Tile otherTile = hit.collider.gameObject.GetComponent<Tile>();
             if (otherTile != null) {
@@ -283,7 +284,7 @@ public class GridManager : MonoBehaviour {
         
         while (!stopped) {
           // see if the position to the right is open
-          RaycastHit2D hit = Physics2D.Raycast(currentTile.transform.position + horizontalRay, Vector2.right, 0.4f);
+          RaycastHit2D hit = Physics2D.Raycast(currentTile.transform.position + horizontalRay, Vector2.right, raycastDistance);
           if (hit && hit.collider.gameObject != currentTile) {
             Tile otherTile = hit.collider.gameObject.GetComponent<Tile>();
             if (otherTile != null) {
@@ -318,7 +319,7 @@ public class GridManager : MonoBehaviour {
         
         while (!stopped) {
           // see if the position to the top is open
-          RaycastHit2D hit = Physics2D.Raycast(currentTile.transform.position + verticalRay, Vector2.up, 0.4f);
+          RaycastHit2D hit = Physics2D.Raycast(currentTile.transform.position + verticalRay, Vector2.up, raycastDistance);
 
           if (hit && hit.collider.gameObject != currentTile) {
             Tile otherTile = hit.collider.gameObject.GetComponent<Tile>();
@@ -353,7 +354,7 @@ public class GridManager : MonoBehaviour {
         
         while (!stopped) {
           // see if the position to the left is open
-          RaycastHit2D hit = Physics2D.Raycast(currentTile.transform.position - verticalRay, -Vector2.up, 0.4f);
+          RaycastHit2D hit = Physics2D.Raycast(currentTile.transform.position - verticalRay, -Vector2.up, raycastDistance);
           if (hit && hit.collider.gameObject != currentTile) {
             Tile otherTile = hit.collider.gameObject.GetComponent<Tile>();
             if (otherTile != null) {
