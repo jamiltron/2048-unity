@@ -52,7 +52,7 @@ public class GridManager : MonoBehaviour {
     state = State.Loaded;
     scoreText = scoreObject.GetComponent<GUIText>();
     Vector3 resetButtonWorldPosition = Camera.main.WorldToScreenPoint(new Vector3(resetButtonTransform.position.x,
-                                                                                   -resetButtonTransform.position.y,
+                                                                                  -resetButtonTransform.position.y,
                                                                                   resetButtonTransform.position.z));
     resetButton = new Rect(resetButtonWorldPosition.x,
                             resetButtonWorldPosition.y,
