@@ -5,5 +5,5 @@ public class Tile : MonoBehaviour {
 
   public int value;
   public int power;
-	
+  
 }

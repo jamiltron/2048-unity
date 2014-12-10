@@ -17,14 +17,12 @@ public class GridManager : MonoBehaviour {
   private static float spaceBetweenTiles = 1.1f;
   private static Vector3 horizontalRay = new Vector3(0.6f, 0f, 0f);
   private static Vector3 verticalRay = new Vector3(0f, 0.6f, 0f);
-
   private int points;
-  private int[,] grid = new int[rows,cols];
+  private int[,] grid = new int[rows, cols];
   private int currentTilesAmount = 0;
   private GUIText scoreText;
   private Rect resetButton;
   private Rect gameOverButton;
-  
   public GameObject[] tilePrefabs;
   public GameObject scoreObject;
   public Transform resetButtonTransform;
@@ -38,27 +36,27 @@ public class GridManager : MonoBehaviour {
 
   private State state;
 
-  void OnGUI () {
-    if (GUI.Button (resetButton, "Reset")) {
-	    Reset ();
-	  }
+  void OnGUI() {
+    if (GUI.Button(resetButton, "Reset")) {
+      Reset();
+    }
     if (state == State.GameOver) {
-      if (GUI.Button (gameOverButton, "Game Over")) {
-        Reset ();
+      if (GUI.Button(gameOverButton, "Game Over")) {
+        Reset();
       }
     }
   }
 
-  void Awake () {
+  void Awake() {
     state = State.Loaded;
     scoreText = scoreObject.GetComponent<GUIText>();
-    Vector3 resetButtonWorldPosition = Camera.main.WorldToScreenPoint (new Vector3(resetButtonTransform.position.x, 
-                                                                                   -resetButtonTransform.position.y, 
+    Vector3 resetButtonWorldPosition = Camera.main.WorldToScreenPoint(new Vector3(resetButtonTransform.position.x,
+                                                                                   -resetButtonTransform.position.y,
                                                                                   resetButtonTransform.position.z));
-    resetButton = new Rect (resetButtonWorldPosition.x,
-	                          resetButtonWorldPosition.y,
-	                          resetButtonWidth, 
-    	                      resetButtonHeight);
+    resetButton = new Rect(resetButtonWorldPosition.x,
+                            resetButtonWorldPosition.y,
+                            resetButtonWidth,
+                            resetButtonHeight);
 
     Vector3 gameOverButtonWorldPosition = Camera.main.WorldToScreenPoint(new Vector3(-1f, 1f, 0f));
     gameOverButton = new Rect(gameOverButtonWorldPosition.x,
@@ -66,30 +64,30 @@ public class GridManager : MonoBehaviour {
                               gameOverButtonWidth,
                               gameOverButtonHeight);
   }
-	
-  void Update () {
+
+  void Update() {
     if (state == State.Loaded) {
       state = State.WaitingForInput;
       GenerateRandomTile();
       GenerateRandomTile();
     } else if (state == State.WaitingForInput) {
-      if (Input.GetButtonDown ("Left")) {
+      if (Input.GetButtonDown("Left")) {
         if (MoveTilesLeft()) {
           state = State.CheckingMatches;
         }
-      } else if (Input.GetButtonDown ("Right")) {        
+      } else if (Input.GetButtonDown("Right")) {
         if (MoveTilesRight()) {
           state = State.CheckingMatches;
         }
-      } else if (Input.GetButtonDown ("Up")) {
+      } else if (Input.GetButtonDown("Up")) {
         if (MoveTilesUp()) {
           state = State.CheckingMatches;
         }
-      } else if (Input.GetButtonDown ("Down")) {
+      } else if (Input.GetButtonDown("Down")) {
         if (MoveTilesDown()) {
           state = State.CheckingMatches;
         }
-      } else if (Input.GetButtonDown ("Reset")) {
+      } else if (Input.GetButtonDown("Reset")) {
         Reset();
       }
     } else if (state == State.CheckingMatches) {
@@ -125,7 +123,7 @@ public class GridManager : MonoBehaviour {
         if (grid[x, y] != 0) {
           GameObject currentObject = GetObjectAtGridPosition(x, y);
           grid[x, y] = 0;
-          Destroy (currentObject);
+          Destroy(currentObject);
         }
       }
     }
@@ -143,7 +141,7 @@ public class GridManager : MonoBehaviour {
 
   private static Vector2 WorldToGridPoint(float x, float y) {
     return new Vector2((x - horizontalSpacingOffset) / (1 + borderSpacing),
-                       (y - verticalSpacingOffset)   / -(1 + borderSpacing));
+                       (y - verticalSpacingOffset) / -(1 + borderSpacing));
   }
 
   public void GenerateRandomTile() {
@@ -218,7 +216,7 @@ public class GridManager : MonoBehaviour {
     Vector2 destroyGridPoint = WorldToGridPoint(toDestroyPosition.x, toDestroyPosition.y);
 
     // create the upgraded tile
-    GameObject newTile = (GameObject) Instantiate (tilePrefabs[upgradeTile.power], toUpgradePosition, transform.rotation);
+    GameObject newTile = (GameObject) Instantiate(tilePrefabs[upgradeTile.power], toUpgradePosition, transform.rotation);
 
     // set the upgrade tile's grid value to double its current value
     grid[Mathf.RoundToInt(upgradeGridPoint.x), Mathf.RoundToInt(upgradeGridPoint.y)] = upgradeTile.value * 2;
@@ -239,8 +237,8 @@ public class GridManager : MonoBehaviour {
 
   private bool MoveTilesLeft() {
     bool hasMoved = false;
-    for (int x = 1; x < 4; x++) {
-      for (int y = 3; y >= 0; y--) {
+    for (int x = 1; x < cols; x++) {
+      for (int y = rows - 1; y >= 0; y--) {
         if (grid[x, y] == 0) {
           continue;
         }
@@ -250,7 +248,7 @@ public class GridManager : MonoBehaviour {
 
         while (!stopped) {
           // see if the position to the left is open
-          RaycastHit2D hit = Physics2D.Raycast (currentTile.transform.position - horizontalRay, -Vector2.right, 0.4f);
+          RaycastHit2D hit = Physics2D.Raycast(currentTile.transform.position - horizontalRay, -Vector2.right, 0.4f);
           if (hit && hit.collider.gameObject != currentTile) {
             Tile otherTile = hit.collider.gameObject.GetComponent<Tile>();
             if (otherTile != null) {
@@ -262,7 +260,7 @@ public class GridManager : MonoBehaviour {
             }
             stopped = true;
           } else {
-            UpdateGrid (currentTile, new Vector2(-spaceBetweenTiles, 0f));
+            UpdateGrid(currentTile, new Vector2(-spaceBetweenTiles, 0f));
             hasMoved = true;
           }
         }
@@ -273,8 +271,8 @@ public class GridManager : MonoBehaviour {
 
   private bool MoveTilesRight() {
     bool hasMoved = false;
-    for (int x = 3; x >= 0; x--) {
-      for (int y = 3; y >= 0; y--) {
+    for (int x = cols - 1; x >= 0; x--) {
+      for (int y = rows - 1; y >= 0; y--) {
         if (grid[x, y] == 0) {
           continue;
         }
@@ -285,7 +283,7 @@ public class GridManager : MonoBehaviour {
         
         while (!stopped) {
           // see if the position to the right is open
-          RaycastHit2D hit = Physics2D.Raycast (currentTile.transform.position + horizontalRay, Vector2.right, 0.4f);
+          RaycastHit2D hit = Physics2D.Raycast(currentTile.transform.position + horizontalRay, Vector2.right, 0.4f);
           if (hit && hit.collider.gameObject != currentTile) {
             Tile otherTile = hit.collider.gameObject.GetComponent<Tile>();
             if (otherTile != null) {
@@ -297,7 +295,7 @@ public class GridManager : MonoBehaviour {
             }
             stopped = true;
           } else {
-            UpdateGrid (currentTile, new Vector2(spaceBetweenTiles, 0f));
+            UpdateGrid(currentTile, new Vector2(spaceBetweenTiles, 0f));
             hasMoved = true;
           }
         }
@@ -308,8 +306,8 @@ public class GridManager : MonoBehaviour {
 
   private bool MoveTilesUp() {
     bool hasMoved = false;
-    for (int y = 1; y < 4; y++) {
-      for (int x = 0; x < 4; x++) {
+    for (int y = 1; y < rows; y++) {
+      for (int x = 0; x < cols; x++) {
         if (grid[x, y] == 0) {
           continue;
         }
@@ -320,7 +318,7 @@ public class GridManager : MonoBehaviour {
         
         while (!stopped) {
           // see if the position to the top is open
-          RaycastHit2D hit = Physics2D.Raycast (currentTile.transform.position + verticalRay, Vector2.up, 0.4f);
+          RaycastHit2D hit = Physics2D.Raycast(currentTile.transform.position + verticalRay, Vector2.up, 0.4f);
 
           if (hit && hit.collider.gameObject != currentTile) {
             Tile otherTile = hit.collider.gameObject.GetComponent<Tile>();
@@ -344,8 +342,8 @@ public class GridManager : MonoBehaviour {
 
   private bool MoveTilesDown() {
     bool hasMoved = false;
-    for (int y = 3; y >= 0; y--) {
-      for (int x = 0; x < 4; x++) {
+    for (int y = rows - 1; y >= 0; y--) {
+      for (int x = 0; x < cols; x++) {
         if (grid[x, y] == 0) {
           continue;
         }
@@ -355,7 +353,7 @@ public class GridManager : MonoBehaviour {
         
         while (!stopped) {
           // see if the position to the left is open
-          RaycastHit2D hit = Physics2D.Raycast (currentTile.transform.position - verticalRay, -Vector2.up, 0.4f);
+          RaycastHit2D hit = Physics2D.Raycast(currentTile.transform.position - verticalRay, -Vector2.up, 0.4f);
           if (hit && hit.collider.gameObject != currentTile) {
             Tile otherTile = hit.collider.gameObject.GetComponent<Tile>();
             if (otherTile != null) {
@@ -367,7 +365,7 @@ public class GridManager : MonoBehaviour {
             }
             stopped = true;
           } else {
-            UpdateGrid (currentTile, new Vector2(0f, -spaceBetweenTiles));
+            UpdateGrid(currentTile, new Vector2(0f, -spaceBetweenTiles));
             hasMoved = true;
           }
         }
@@ -377,7 +375,7 @@ public class GridManager : MonoBehaviour {
   }
 
   private GameObject GetObjectAtGridPosition(int x, int y) {
-    RaycastHit2D hit = Physics2D.Raycast (GridToWorldPoint (x, y), Vector2.right, 0.1f);
+    RaycastHit2D hit = Physics2D.Raycast(GridToWorldPoint(x, y), Vector2.right, 0.1f);
 
     if (hit) {
       return hit.collider.gameObject;
