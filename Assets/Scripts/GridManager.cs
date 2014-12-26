@@ -90,6 +90,8 @@ public class GridManager : MonoBehaviour {
         }
       } else if (Input.GetButtonDown("Reset")) {
         Reset();
+      } else if (Input.GetButtonDown("Quit")) {
+        Application.Quit();
       }
     } else if (state == State.CheckingMatches) {
       GenerateRandomTile();
