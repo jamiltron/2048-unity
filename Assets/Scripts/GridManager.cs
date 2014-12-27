@@ -3,9 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class GridManager : MonoBehaviour {
-  public GameObject noTile;
-  public LayerMask backgroundLayer;
-
   private static int rows = 4;
   private static int cols = 4;
   private static int lowestNewTileValue = 2;
@@ -23,12 +20,14 @@ public class GridManager : MonoBehaviour {
 
   private int points;
 	private List<GameObject> tiles;
-
   private GUIText scoreText;
   private Rect resetButton;
   private Rect gameOverButton;
-  public GameObject[] tilePrefabs;
+
+  public GameObject noTile;
   public GameObject scoreObject;
+  public GameObject[] tilePrefabs;
+  public LayerMask backgroundLayer;
   public Transform resetButtonTransform;
 
   private enum State {
@@ -40,6 +39,26 @@ public class GridManager : MonoBehaviour {
 
   private State state;
 
+  #region monodevelop
+  void Awake() {
+    tiles = new List<GameObject>();
+    state = State.Loaded;
+    scoreText = scoreObject.GetComponent<GUIText>();
+    Vector3 resetButtonWorldPosition = Camera.main.WorldToScreenPoint(new Vector3(resetButtonTransform.position.x,
+                                                                                  -resetButtonTransform.position.y,
+                                                                                  resetButtonTransform.position.z));
+    resetButton = new Rect(resetButtonWorldPosition.x,
+                           resetButtonWorldPosition.y,
+                           resetButtonWidth,
+                           resetButtonHeight);
+    
+    Vector3 gameOverButtonWorldPosition = Camera.main.WorldToScreenPoint(new Vector3(-1f, 1f, 0f));
+    gameOverButton = new Rect(gameOverButtonWorldPosition.x,
+                              gameOverButtonWorldPosition.y,
+                              gameOverButtonWidth,
+                              gameOverButtonHeight);
+  }
+
   void OnGUI() {
     if (GUI.Button(resetButton, "Reset")) {
       Reset();
@@ -49,25 +68,6 @@ public class GridManager : MonoBehaviour {
         Reset();
       }
     }
-  }
-
-  void Awake() {
-    tiles = new List<GameObject>();
-    state = State.Loaded;
-    scoreText = scoreObject.GetComponent<GUIText>();
-    Vector3 resetButtonWorldPosition = Camera.main.WorldToScreenPoint(new Vector3(resetButtonTransform.position.x,
-                                                                                  -resetButtonTransform.position.y,
-                                                                                  resetButtonTransform.position.z));
-    resetButton = new Rect(resetButtonWorldPosition.x,
-                            resetButtonWorldPosition.y,
-                            resetButtonWidth,
-                            resetButtonHeight);
-
-    Vector3 gameOverButtonWorldPosition = Camera.main.WorldToScreenPoint(new Vector3(-1f, 1f, 0f));
-    gameOverButton = new Rect(gameOverButtonWorldPosition.x,
-                              gameOverButtonWorldPosition.y,
-                              gameOverButtonWidth,
-                              gameOverButtonHeight);
   }
 
   void Update() {
@@ -107,25 +107,32 @@ public class GridManager : MonoBehaviour {
       }
     }
   }
+  #endregion
 
-  private void ReadyTilesForUpgrading() {
-    foreach (var obj in tiles) {
-      Tile tile = obj.GetComponent<Tile>();
-      tile.upgradedThisTurn = false;
-    }
+  #region class methods
+  private static Vector2 GridToWorldPoint(int x, int y) {
+    return new Vector2(x + horizontalSpacingOffset + borderSpacing * x, 
+                       -y + verticalSpacingOffset - borderSpacing * y);
   }
+  
+  private static Vector2 WorldToGridPoint(float x, float y) {
+    return new Vector2((x - horizontalSpacingOffset) / (1 + borderSpacing),
+                       (y - verticalSpacingOffset) / -(1 + borderSpacing));
+  }
+  #endregion
 
+  #region private methods
   private bool CheckForMovesLeft() {
     if (tiles.Count < rows * cols) {
       return true;
     }
-
+    
     for (int x = 0; x < cols; x++) {
       for (int y = 0; y < rows; y++) {
         Tile currentTile = GetObjectAtGridPosition(x, y).GetComponent<Tile>();
         Tile rightTile = GetObjectAtGridPosition(x + 1, y).GetComponent<Tile>();
         Tile downTile = GetObjectAtGridPosition (x, y + 1).GetComponent<Tile>();
-
+        
         if (x != cols - 1 && currentTile.value == rightTile.value) {
           return true;
         } else if (y != rows - 1 && currentTile.value == downTile.value) {
@@ -136,33 +143,11 @@ public class GridManager : MonoBehaviour {
     return false;
   }
 
-  private void Reset() {
-    foreach (var tile in tiles) {
-      Destroy(tile);
-    }
-
-    tiles.Clear();
-    points = 0;
-    scoreText.text = "0";
-    state = State.Loaded;
-  }
-
-  private static Vector2 GridToWorldPoint(int x, int y) {
-    return new Vector2(x + horizontalSpacingOffset + borderSpacing * x, 
-                       -y + verticalSpacingOffset - borderSpacing * y);
-  }
-
-  private static Vector2 WorldToGridPoint(float x, float y) {
-    return new Vector2((x - horizontalSpacingOffset) / (1 + borderSpacing),
-                       (y - verticalSpacingOffset) / -(1 + borderSpacing));
-  }
-
   public void GenerateRandomTile() {
-    // make sure we can create tiles
     if (tiles.Count >= rows * cols) {
       throw new UnityException("Unable to create new tile - grid is already full");
     }
-
+    
     int value;
     // find out if we are generating a tile with the lowest or highest value
     float highOrLowChance = Random.Range(0f, 0.99f);
@@ -171,11 +156,11 @@ public class GridManager : MonoBehaviour {
     } else {
       value = lowestNewTileValue;
     }
-
+    
     // attempt to get the starting position
     int x = Random.Range(0, cols);
     int y = Random.Range(0, rows);
-
+    
     // starting from the random starting position, loop through
     // each cell in the grid until we find an empty positio
     bool found = false;
@@ -189,23 +174,44 @@ public class GridManager : MonoBehaviour {
         } else {
           obj = (GameObject) Instantiate(tilePrefabs[1], worldPosition, transform.rotation);
         }
-     
+        
         tiles.Add(obj);
         TileAnimationHandler tileAnimManager = obj.GetComponent<TileAnimationHandler>();
         tileAnimManager.AnimateEntry();
       }
-
+      
       x++;
       if (x >= cols) {
         y++;
         x = 0;
       }
-
+      
       if (y >= rows) {
         y = 0;
       }
     }
   }
+
+  private void ReadyTilesForUpgrading() {
+    foreach (var obj in tiles) {
+      Tile tile = obj.GetComponent<Tile>();
+      tile.upgradedThisTurn = false;
+    }
+  }
+
+  private void Reset() {
+    foreach (var tile in tiles) {
+      Destroy(tile);
+    }
+
+    tiles.Clear();
+    points = 0;
+    scoreText.text = "0";
+    state = State.Loaded;
+  }
+
+ 
+
 
   private void UpgradeTile(GameObject toDestroy, Tile destroyTile, GameObject toUpgrade, Tile upgradeTile) {
     Vector3 toUpgradePosition = toUpgrade.transform.position;
@@ -421,4 +427,5 @@ public class GridManager : MonoBehaviour {
 	    return noTile;
     }
   }
+  #endregion
 }
