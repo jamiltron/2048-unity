@@ -52,7 +52,7 @@ public class GridManager : MonoBehaviour {
                            resetButtonWidth,
                            resetButtonHeight);
     
-    Vector3 gameOverButtonWorldPosition = Camera.main.WorldToScreenPoint(new Vector3(-1f, 1f, 0f));
+    Vector3 gameOverButtonWorldPosition = Camera.main.WorldToScreenPoint(new Vector3(-1f, -1f, 0f));
     gameOverButton = new Rect(gameOverButtonWorldPosition.x,
                               gameOverButtonWorldPosition.y,
                               gameOverButtonWidth,
