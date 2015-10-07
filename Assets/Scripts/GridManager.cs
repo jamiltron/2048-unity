@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -20,12 +21,11 @@ public class GridManager : MonoBehaviour {
 
   private int points;
   private List<GameObject> tiles;
-  private GUIText scoreText;
   private Rect resetButton;
   private Rect gameOverButton;
 
   public GameObject noTile;
-  public GameObject scoreObject;
+  public Text scoreText;
   public GameObject[] tilePrefabs;
   public LayerMask backgroundLayer;
   public Transform resetButtonTransform;
@@ -43,7 +43,6 @@ public class GridManager : MonoBehaviour {
   void Awake() {
     tiles = new List<GameObject>();
     state = State.Loaded;
-    scoreText = scoreObject.GetComponent<GUIText>();
     Vector3 resetButtonWorldPosition = Camera.main.WorldToScreenPoint(new Vector3(resetButtonTransform.position.x,
                                                                                   -resetButtonTransform.position.y,
                                                                                   resetButtonTransform.position.z));
@@ -131,7 +130,7 @@ public class GridManager : MonoBehaviour {
       for (int y = 0; y < rows; y++) {
         Tile currentTile = GetObjectAtGridPosition(x, y).GetComponent<Tile>();
         Tile rightTile = GetObjectAtGridPosition(x + 1, y).GetComponent<Tile>();
-        Tile downTile = GetObjectAtGridPosition (x, y + 1).GetComponent<Tile>();
+        Tile downTile = GetObjectAtGridPosition(x, y + 1).GetComponent<Tile>();
         
         if (x != cols - 1 && currentTile.value == rightTile.value) {
           return true;
