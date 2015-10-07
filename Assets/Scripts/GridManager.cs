@@ -12,10 +12,6 @@ public class GridManager : MonoBehaviour {
   private static float horizontalSpacingOffset = -1.65f;
   private static float verticalSpacingOffset = 1.65f;
   private static float borderSpacing = 0.1f;
-  private static float resetButtonWidth = 80f;
-  private static float resetButtonHeight = 40f;
-  private static float gameOverButtonWidth = 150f;
-  private static float gameOverButtonHeight = 300f;
   private static float halfTileWidth = 0.55f;
   private static float spaceBetweenTiles = 1.1f;
 
@@ -24,11 +20,11 @@ public class GridManager : MonoBehaviour {
   private Rect resetButton;
   private Rect gameOverButton;
 
+  public GameObject gameOverPanel;
   public GameObject noTile;
   public Text scoreText;
   public GameObject[] tilePrefabs;
   public LayerMask backgroundLayer;
-  public Transform resetButtonTransform;
 
   private enum State {
     Loaded, 
@@ -43,34 +39,12 @@ public class GridManager : MonoBehaviour {
   void Awake() {
     tiles = new List<GameObject>();
     state = State.Loaded;
-    Vector3 resetButtonWorldPosition = Camera.main.WorldToScreenPoint(new Vector3(resetButtonTransform.position.x,
-                                                                                  -resetButtonTransform.position.y,
-                                                                                  resetButtonTransform.position.z));
-    resetButton = new Rect(resetButtonWorldPosition.x,
-                           resetButtonWorldPosition.y,
-                           resetButtonWidth,
-                           resetButtonHeight);
-    
-    Vector3 gameOverButtonWorldPosition = Camera.main.WorldToScreenPoint(new Vector3(-1f, -1f, 0f));
-    gameOverButton = new Rect(gameOverButtonWorldPosition.x,
-                              gameOverButtonWorldPosition.y,
-                              gameOverButtonWidth,
-                              gameOverButtonHeight);
-  }
-
-  void OnGUI() {
-    if (GUI.Button(resetButton, "Reset")) {
-      Reset();
-    }
-    if (state == State.GameOver) {
-      if (GUI.Button(gameOverButton, "Game Over")) {
-        Reset();
-      }
-    }
   }
 
   void Update() {
-    if (state == State.Loaded) {
+    if (state == State.GameOver) {
+      gameOverPanel.SetActive(true);
+    } else if (state == State.Loaded) {
       state = State.WaitingForInput;
       GenerateRandomTile();
       GenerateRandomTile();
@@ -392,7 +366,8 @@ public class GridManager : MonoBehaviour {
     }
   }
 
-  private void Reset() {
+  public void Reset() {
+    gameOverPanel.SetActive(false);
     foreach (var tile in tiles) {
       Destroy(tile);
     }
