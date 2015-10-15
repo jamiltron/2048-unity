@@ -20,6 +20,7 @@ public class GridManager : MonoBehaviour {
   private Rect resetButton;
   private Rect gameOverButton;
 
+  public int maxValue = 1024;
   public GameObject gameOverPanel;
   public GameObject noTile;
   public Text scoreText;
@@ -194,7 +195,7 @@ public class GridManager : MonoBehaviour {
             if (hitObject.tag == "Tile") {
               Tile thatTile = hitObject.GetComponent<Tile>();
               Tile thisTile = obj.GetComponent<Tile>();
-              if (thisTile.power == thatTile.power && !thisTile.upgradedThisTurn && !thatTile.upgradedThisTurn) {
+              if (CanUpgrade(thisTile, thatTile)) {
                 UpgradeTile(obj, thisTile, hitObject, thatTile);
                 hasMoved = true;
               } else {
@@ -240,7 +241,7 @@ public class GridManager : MonoBehaviour {
             if (hitObject.tag == "Tile") {
               Tile thatTile = hitObject.GetComponent<Tile>();
               Tile thisTile = obj.GetComponent<Tile>();
-              if (thisTile.power == thatTile.power && !thisTile.upgradedThisTurn && !thatTile.upgradedThisTurn) {
+              if (CanUpgrade(thisTile, thatTile)) {
                 UpgradeTile(obj, thisTile, hitObject, thatTile);
                 hasMoved = true;
               } else {
@@ -286,7 +287,7 @@ public class GridManager : MonoBehaviour {
             if (hitObject.tag == "Tile") {
               Tile thatTile = hitObject.GetComponent<Tile>();
               Tile thisTile = obj.GetComponent<Tile>();
-              if (thisTile.power == thatTile.power && !thisTile.upgradedThisTurn && !thatTile.upgradedThisTurn) {
+              if (CanUpgrade(thisTile, thatTile)) {
                 UpgradeTile(obj, thisTile, hitObject, thatTile);
                 hasMoved = true;
               } else {
@@ -332,7 +333,7 @@ public class GridManager : MonoBehaviour {
             if (hitObject.tag == "Tile") {
               Tile thatTile = hitObject.GetComponent<Tile>();
               Tile thisTile = obj.GetComponent<Tile>();
-              if (thisTile.power == thatTile.power && !thisTile.upgradedThisTurn && !thatTile.upgradedThisTurn) {
+              if (CanUpgrade(thisTile, thatTile)) {
                 UpgradeTile(obj, thisTile, hitObject, thatTile);
                 hasMoved = true;
               } else {
@@ -355,8 +356,12 @@ public class GridManager : MonoBehaviour {
         }
       }
     }
-    
+  
     return hasMoved;
+  }
+
+  private bool CanUpgrade(Tile thisTile, Tile thatTile) {
+    return (thisTile.value != maxValue && thisTile.power == thatTile.power && !thisTile.upgradedThisTurn && !thatTile.upgradedThisTurn);
   }
 
   private void ReadyTilesForUpgrading() {
