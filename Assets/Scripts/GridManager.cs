@@ -20,7 +20,7 @@ public class GridManager : MonoBehaviour {
   private Rect resetButton;
   private Rect gameOverButton;
 
-  public int maxValue = 1024;
+  public int maxValue = 2048;
   public GameObject gameOverPanel;
   public GameObject noTile;
   public Text scoreText;

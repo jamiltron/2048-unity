@@ -1644,6 +1644,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57586050a64bb3d4aa56fe142019f47f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxValue: 1024
   gameOverPanel: {fileID: 999796184}
   noTile: {fileID: 135876, guid: a75f7d8cc56b74672984c18c4b744c73, type: 2}
   scoreText: {fileID: 1297970829}
