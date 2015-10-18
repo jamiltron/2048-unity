@@ -19,6 +19,7 @@ public class GridManager : MonoBehaviour {
   private List<GameObject> tiles;
   private Rect resetButton;
   private Rect gameOverButton;
+	private Vector2 touchStartPosition = Vector2.zero;
 
   public int maxValue = 2048;
   public GameObject gameOverPanel;
@@ -26,6 +27,7 @@ public class GridManager : MonoBehaviour {
   public Text scoreText;
   public GameObject[] tilePrefabs;
   public LayerMask backgroundLayer;
+	public float minSwipeDistance = 10.0f;
 
   private enum State {
     Loaded, 
@@ -50,6 +52,7 @@ public class GridManager : MonoBehaviour {
       GenerateRandomTile();
       GenerateRandomTile();
     } else if (state == State.WaitingForInput) {
+#if UNITY_STANDALONE
       if (Input.GetButtonDown("Left")) {
         if (MoveTilesLeft()) {
           state = State.CheckingMatches;
@@ -71,6 +74,37 @@ public class GridManager : MonoBehaviour {
       } else if (Input.GetButtonDown("Quit")) {
         Application.Quit();
       }
+#endif
+
+#if UNITY_ANDROID || UNITY_IOS || UNITY_WP8 || UNITY_WP8_1
+			if(Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began) {
+				touchStartPosition = Input.GetTouch(0).position;
+			}
+			if(Input.GetTouch(0).phase == TouchPhase.Ended) {
+				Vector2 swipeDelta = (Input.GetTouch(0).position - touchStartPosition);
+				if(swipeDelta.magnitude < minSwipeDistance) {
+					return;
+				}
+				swipeDelta.Normalize();
+				if(swipeDelta.y > 0.0f && swipeDelta.x > -0.5f && swipeDelta.x < 0.5f) {
+					if(MoveTilesUp()) {
+						state = State.CheckingMatches;
+					}
+				} else if(swipeDelta.y < 0.0f && swipeDelta.x > -0.5f && swipeDelta.x < 0.5f) {
+					if(MoveTilesDown()) {
+						state = State.CheckingMatches;
+					}
+				} else if(swipeDelta.x > 0.0f && swipeDelta.y > -0.5f && swipeDelta.y < 0.5f) {
+					if(MoveTilesRight()) {
+						state = State.CheckingMatches;
+					}
+				} else if(swipeDelta.x < 0.0f && swipeDelta.y > -0.5f && swipeDelta.y < 0.5f) {
+					if(MoveTilesLeft()) {
+						state = State.CheckingMatches;
+					}
+				}
+			}
+#endif
     } else if (state == State.CheckingMatches) {
       GenerateRandomTile();
       if (CheckForMovesLeft()) {
