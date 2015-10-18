@@ -144,9 +144,9 @@ public class GridManager : MonoBehaviour {
         Vector2 worldPosition = GridToWorldPoint(x, y);
         GameObject obj;
         if (value == lowestNewTileValue) {
-          obj = (GameObject) Instantiate(tilePrefabs[0], worldPosition, transform.rotation);
+					obj = SimplePool.Spawn(tilePrefabs[0], worldPosition, transform.rotation);
         } else {
-          obj = (GameObject) Instantiate(tilePrefabs[1], worldPosition, transform.rotation);
+					obj = SimplePool.Spawn(tilePrefabs[1], worldPosition, transform.rotation);
         }
         
         tiles.Add(obj);
@@ -374,7 +374,7 @@ public class GridManager : MonoBehaviour {
   public void Reset() {
     gameOverPanel.SetActive(false);
     foreach (var tile in tiles) {
-      Destroy(tile);
+			SimplePool.Despawn(tile);
     }
 
     tiles.Clear();
@@ -388,11 +388,12 @@ public class GridManager : MonoBehaviour {
 
     tiles.Remove(toDestroy);
     tiles.Remove(toUpgrade);
-    Destroy(toDestroy);
-    Destroy(toUpgrade);
+
+		SimplePool.Despawn(toDestroy);
+		SimplePool.Despawn(toUpgrade);
 
     // create the upgraded tile
-    GameObject newTile = (GameObject) Instantiate(tilePrefabs[upgradeTile.power], toUpgradePosition, transform.rotation);
+		GameObject newTile = SimplePool.Spawn(tilePrefabs[upgradeTile.power], toUpgradePosition, transform.rotation);
     tiles.Add(newTile);
     Tile tile = newTile.GetComponent<Tile>();
     tile.upgradedThisTurn = true;
