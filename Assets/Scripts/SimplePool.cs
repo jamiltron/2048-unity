@@ -75,7 +75,7 @@ public static class SimplePool {
 			if(inactive.Count==0) {
 				// We don't have an object in our pool, so we
 				// instantiate a whole new object.
-				obj = (GameObject)GameObject.Instantiate(prefab, pos, rot);
+				obj = Object.Instantiate(prefab, pos, rot);
 				obj.name = prefab.name + " ("+(nextId++)+")";
 				
 				// Add a PoolMember component so we know what pool
