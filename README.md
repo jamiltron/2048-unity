@@ -15,8 +15,6 @@ Join matching tiles to advance powers of 2. Try to get to 2048!
 
 TODO
 ----
-
-Make the game over button better.         
 Clean up and DRY the code.    
 Use object pooling for the tiles just to.    
 Maybe add slide animation.    
